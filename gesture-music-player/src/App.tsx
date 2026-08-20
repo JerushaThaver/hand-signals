@@ -37,13 +37,6 @@ function App() {
       });
 
       streamRef.current = stream;
-
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-
-        await videoRef.current.play();
-      }
-
       setCameraEnabled(true);
     } catch (error) {
       console.error("Camera access error:", error);
@@ -69,6 +62,18 @@ function App() {
       setCameraEnabled(false);
     }
   };
+
+  useEffect(() => {
+    const video = videoRef.current;
+    const stream = streamRef.current;
+
+    if (!cameraEnabled || !video || !stream) {
+      return;
+    }
+
+    video.srcObject = stream;
+    void video.play();
+  }, [cameraEnabled]);
 
   const disableCamera = () => {
     if (streamRef.current) {
