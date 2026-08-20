@@ -1,24 +1,23 @@
-import {
-  Activity,
-  Camera,
-  Hand,
-  Play,
-  SkipBack,
-  SkipForward,
-  Volume2,
-} from "lucide-react";
+import { Camera } from "lucide-react";
 
 import MusicPlayer from "./components/MusicPlayer";
+import GestureIcon from "./components/GestureIcon";
 import { songs } from "./data/songs";
 import "./App.css";
 
 function App() {
   return (
     <main className="app">
-  
+
+      {/* ================================
+          HEADER
+      ================================= */}
+
       <header className="app-header">
         <div>
-          <span className="eyebrow">GESTURE CONTROLLED AUDIO</span>
+          <span className="eyebrow">
+            GESTURE CONTROLLED AUDIO
+          </span>
 
           <h1>
             Gesture<span>Player</span>
@@ -29,7 +28,7 @@ function App() {
           </p>
         </div>
 
-    
+        {/* System Status */}
 
         <div className="status">
           <span className="status-dot"></span>
@@ -37,28 +36,40 @@ function App() {
         </div>
       </header>
 
-     
+      {/* ================================
+          MAIN CONTENT
+      ================================= */}
 
       <div className="player-layout">
+
         {/* Music Player */}
 
         <MusicPlayer songs={songs} />
 
-        {/* Gesture Panel */}
+        {/* ================================
+            GESTURE PANEL
+        ================================= */}
+
         <aside className="gesture-panel">
+
           {/* Panel Header */}
 
           <div className="panel-header">
-            <span className="eyebrow">GESTURE ENGINE</span>
+            <span className="eyebrow">
+              GESTURE ENGINE
+            </span>
 
             <span className="waiting">
               WAITING
             </span>
           </div>
 
-          {/* Camera */}
+          {/* ================================
+              CAMERA
+          ================================= */}
 
           <div className="camera-placeholder">
+
             <div className="camera-icon">
               <Camera
                 size={52}
@@ -72,79 +83,81 @@ function App() {
               Your camera will appear here once
               gesture recognition is enabled.
             </p>
+
           </div>
 
-          {/* Gesture Controls */}
+          {/* ================================
+              GESTURE CONTROLS
+          ================================= */}
 
           <div className="gesture-list">
 
-            {/* Play / Pause */}
+            {/* Thumbs Up */}
 
             <div className="gesture-item">
+
               <span className="gesture-icon">
-                <Play
-                  size={20}
-                  strokeWidth={1.8}
-                />
+                <GestureIcon gesture="thumbs-up" />
               </span>
 
               <div>
                 <strong>Play / Pause</strong>
                 <small>Thumbs up</small>
               </div>
+
             </div>
 
-            {/* Next Track */}
+            {/* Open Hand */}
 
             <div className="gesture-item">
+
               <span className="gesture-icon">
-                <SkipForward
-                  size={20}
-                  strokeWidth={1.8}
-                />
+                <GestureIcon gesture="open-hand" />
               </span>
 
               <div>
                 <strong>Next Track</strong>
                 <small>Open hand</small>
               </div>
+
             </div>
 
-            {/* Previous Track */}
+            {/* Point Left */}
 
             <div className="gesture-item">
+
               <span className="gesture-icon">
-                <SkipBack
-                  size={20}
-                  strokeWidth={1.8}
-                />
+                <GestureIcon gesture="point-left" />
               </span>
 
               <div>
                 <strong>Previous Track</strong>
                 <small>Point left</small>
               </div>
+
             </div>
 
-            {/* Volume */}
+            {/* Two Fingers */}
 
             <div className="gesture-item">
+
               <span className="gesture-icon">
-                <Volume2
-                  size={20}
-                  strokeWidth={1.8}
-                />
+                <GestureIcon gesture="two-fingers" />
               </span>
 
               <div>
                 <strong>Volume</strong>
                 <small>Two fingers</small>
               </div>
+
             </div>
 
           </div>
+
         </aside>
+
       </div>
+
     </main>
   );
 }
