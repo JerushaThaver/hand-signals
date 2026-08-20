@@ -1,17 +1,18 @@
 import { Camera } from "lucide-react";
 
 import MusicPlayer from "./components/MusicPlayer";
-import GestureIcon from "./components/GestureIcon";
 import { songs } from "./data/songs";
+
+import thumbsUpIcon from "./assets/gestures/thumbs-up.svg";
+import openHandIcon from "./assets/gestures/open-hand.svg";
+import pointLeftIcon from "./assets/gestures/point-left.svg";
+import twoFingersIcon from "./assets/gestures/two-fingers.svg";
+
 import "./App.css";
 
 function App() {
   return (
     <main className="app">
-
-      {/* ================================
-          HEADER
-      ================================= */}
 
       <header className="app-header">
         <div>
@@ -28,31 +29,17 @@ function App() {
           </p>
         </div>
 
-        {/* System Status */}
-
         <div className="status">
           <span className="status-dot"></span>
           SYSTEM ONLINE
         </div>
       </header>
 
-      {/* ================================
-          MAIN CONTENT
-      ================================= */}
-
       <div className="player-layout">
-
-        {/* Music Player */}
 
         <MusicPlayer songs={songs} />
 
-        {/* ================================
-            GESTURE PANEL
-        ================================= */}
-
         <aside className="gesture-panel">
-
-          {/* Panel Header */}
 
           <div className="panel-header">
             <span className="eyebrow">
@@ -63,10 +50,6 @@ function App() {
               WAITING
             </span>
           </div>
-
-          {/* ================================
-              CAMERA
-          ================================= */}
 
           <div className="camera-placeholder">
 
@@ -86,70 +69,62 @@ function App() {
 
           </div>
 
-          {/* ================================
-              GESTURE CONTROLS
-          ================================= */}
-
           <div className="gesture-list">
 
-            {/* Thumbs Up */}
-
             <div className="gesture-item">
-
               <span className="gesture-icon">
-                <GestureIcon gesture="thumbs-up" />
+                <img
+                  src={thumbsUpIcon}
+                  alt="Thumbs up gesture"
+                />
               </span>
 
               <div>
                 <strong>Play / Pause</strong>
                 <small>Thumbs up</small>
               </div>
-
             </div>
 
-            {/* Open Hand */}
-
             <div className="gesture-item">
-
               <span className="gesture-icon">
-                <GestureIcon gesture="open-hand" />
+                <img
+                  src={openHandIcon}
+                  alt="Open hand gesture"
+                />
               </span>
 
               <div>
                 <strong>Next Track</strong>
                 <small>Open hand</small>
               </div>
-
             </div>
 
-            {/* Point Left */}
-
             <div className="gesture-item">
-
               <span className="gesture-icon">
-                <GestureIcon gesture="point-left" />
+                <img
+                  src={pointLeftIcon}
+                  alt="Point left gesture"
+                />
               </span>
 
               <div>
                 <strong>Previous Track</strong>
                 <small>Point left</small>
               </div>
-
             </div>
 
-            {/* Two Fingers */}
-
             <div className="gesture-item">
-
               <span className="gesture-icon">
-                <GestureIcon gesture="two-fingers" />
+                <img
+                  src={twoFingersIcon}
+                  alt="Two fingers gesture"
+                />
               </span>
 
               <div>
                 <strong>Volume</strong>
                 <small>Two fingers</small>
               </div>
-
             </div>
 
           </div>
