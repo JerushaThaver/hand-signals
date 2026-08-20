@@ -1,122 +1,294 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useEffect, useRef, useState } from "react";
+import { Camera, CameraOff } from "lucide-react";
+
+import MusicPlayer from "./components/MusicPlayer";
+import { songs } from "./data/songs";
+
+import thumbsUpIcon from "./assets/gestures/thumbs-up.svg";
+import openHandIcon from "./assets/gestures/open-hand.svg";
+import pointLeftIcon from "./assets/gestures/point-left.svg";
+import twoFingersIcon from "./assets/gestures/two-fingers.svg";
+
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+
+  const [cameraEnabled, setCameraEnabled] = useState(false);
+  const [cameraError, setCameraError] = useState("");
+
+  const enableCamera = async () => {
+    setCameraError("");
+
+    try {
+      // Ask the browser for webcam access
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: "user",
+          width: {
+            ideal: 1280,
+          },
+          height: {
+            ideal: 720,
+          },
+        },
+        audio: false,
+      });
+
+      streamRef.current = stream;
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+
+        await videoRef.current.play();
+      }
+
+      setCameraEnabled(true);
+    } catch (error) {
+      console.error("Camera access error:", error);
+
+      if (error instanceof DOMException) {
+        if (error.name === "NotAllowedError") {
+          setCameraError(
+            "Camera permission was denied. Please allow camera access in your browser."
+          );
+        } else if (error.name === "NotFoundError") {
+          setCameraError(
+            "No camera was found. Please connect a webcam and try again."
+          );
+        } else {
+          setCameraError(
+            "Unable to access the camera. Please check your browser settings."
+          );
+        }
+      } else {
+        setCameraError("Something went wrong while accessing the camera.");
+      }
+
+      setCameraEnabled(false);
+    }
+  };
+
+  const disableCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => {
+        track.stop();
+      });
+
+      streamRef.current = null;
+    }
+
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+
+    setCameraEnabled(false);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => {
+          track.stop();
+        });
+      }
+    };
+  }, []);
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
+    <main className="app">
+
+      {/* HEADER */}
+      <header className="app-header">
         <div>
-          <h1>Get started</h1>
+          <span className="eyebrow">
+            GESTURE CONTROLLED AUDIO
+          </span>
+
+          <h1>
+            Gesture<span>Player</span>
+          </h1>
+
           <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
+            Control your music using nothing but your hands.
           </p>
         </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+        <div className="status">
+          <span className="status-dot"></span>
+          SYSTEM ONLINE
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      </header>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+
+      {/* MAIN CONTENT */}
+      <div className="player-layout">
+
+        <MusicPlayer songs={songs} />
+
+
+        {/* GESTURE PANEL */}
+        <aside className="gesture-panel">
+
+          <div className="panel-header">
+            <span className="eyebrow">
+              GESTURE ENGINE
+            </span>
+
+            <span
+              className={`waiting ${
+                cameraEnabled ? "camera-active" : ""
+              }`}
+            >
+              {cameraEnabled ? "ACTIVE" : "WAITING"}
+            </span>
+          </div>
+
+
+          {/* CAMERA */}
+          <div
+            className={`camera-placeholder ${
+              cameraEnabled ? "camera-enabled" : ""
+            }`}
+          >
+
+            {!cameraEnabled ? (
+              <>
+                <div className="camera-icon">
+                  <Camera
+                    size={52}
+                    strokeWidth={1.4}
+                  />
+                </div>
+
+                <h2>Camera Ready</h2>
+
+                <p>
+                  Your camera will appear here once
+                  gesture recognition is enabled.
+                </p>
+
+                <button
+                  className="camera-button"
+                  onClick={enableCamera}
+                >
+                  <Camera size={18} />
+
+                  ENABLE CAMERA
+                </button>
+
+                {cameraError && (
+                  <div className="camera-error">
+                    <CameraOff size={17} />
+
+                    <span>{cameraError}</span>
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                <video
+                  ref={videoRef}
+                  className="camera-video"
+                  autoPlay
+                  playsInline
+                  muted
+                />
+
+                <div className="camera-overlay">
+
+                  <div className="camera-live">
+                    <span className="live-dot"></span>
+                    CAMERA LIVE
+                  </div>
+
+                  <button
+                    className="disable-camera-button"
+                    onClick={disableCamera}
+                  >
+                    <CameraOff size={17} />
+
+                    TURN OFF
+                  </button>
+
+                </div>
+              </>
+            )}
+
+          </div>
+
+
+          {/* GESTURES */}
+          <div className="gesture-list">
+
+            <div className="gesture-item">
+              <span className="gesture-icon">
+                <img
+                  src={thumbsUpIcon}
+                  alt="Thumbs up gesture"
+                />
+              </span>
+
+              <div>
+                <strong>Play / Pause</strong>
+                <small>Thumbs up</small>
+              </div>
+            </div>
+
+
+            <div className="gesture-item">
+              <span className="gesture-icon">
+                <img
+                  src={openHandIcon}
+                  alt="Open hand gesture"
+                />
+              </span>
+
+              <div>
+                <strong>Next Track</strong>
+                <small>Open hand</small>
+              </div>
+            </div>
+
+
+            <div className="gesture-item">
+              <span className="gesture-icon">
+                <img
+                  src={pointLeftIcon}
+                  alt="Point left gesture"
+                />
+              </span>
+
+              <div>
+                <strong>Previous Track</strong>
+                <small>Point left</small>
+              </div>
+            </div>
+
+
+            <div className="gesture-item">
+              <span className="gesture-icon">
+                <img
+                  src={twoFingersIcon}
+                  alt="Two fingers gesture"
+                />
+              </span>
+
+              <div>
+                <strong>Volume</strong>
+                <small>Two fingers</small>
+              </div>
+            </div>
+
+          </div>
+
+        </aside>
+
+      </div>
+
+    </main>
+  );
 }
 
-export default App
+export default App;
