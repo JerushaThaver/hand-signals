@@ -1,7 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { Camera, CameraOff } from "lucide-react";
-
 import MusicPlayer from "./components/MusicPlayer";
+import GestureCamera from "./components/GestureCamera";
 import { songs } from "./data/songs";
 
 import thumbsUpIcon from "./assets/gestures/thumbs-up.svg";
@@ -12,95 +10,6 @@ import twoFingersIcon from "./assets/gestures/two-fingers.svg";
 import "./App.css";
 
 function App() {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-
-  const [cameraEnabled, setCameraEnabled] = useState(false);
-  const [cameraError, setCameraError] = useState("");
-
-  const enableCamera = async () => {
-    setCameraError("");
-
-    try {
-      // Ask the browser for webcam access
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: "user",
-          width: {
-            ideal: 1280,
-          },
-          height: {
-            ideal: 720,
-          },
-        },
-        audio: false,
-      });
-
-      streamRef.current = stream;
-      setCameraEnabled(true);
-    } catch (error) {
-      console.error("Camera access error:", error);
-
-      if (error instanceof DOMException) {
-        if (error.name === "NotAllowedError") {
-          setCameraError(
-            "Camera permission was denied. Please allow camera access in your browser."
-          );
-        } else if (error.name === "NotFoundError") {
-          setCameraError(
-            "No camera was found. Please connect a webcam and try again."
-          );
-        } else {
-          setCameraError(
-            "Unable to access the camera. Please check your browser settings."
-          );
-        }
-      } else {
-        setCameraError("Something went wrong while accessing the camera.");
-      }
-
-      setCameraEnabled(false);
-    }
-  };
-
-  useEffect(() => {
-    const video = videoRef.current;
-    const stream = streamRef.current;
-
-    if (!cameraEnabled || !video || !stream) {
-      return;
-    }
-
-    video.srcObject = stream;
-    void video.play();
-  }, [cameraEnabled]);
-
-  const disableCamera = () => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => {
-        track.stop();
-      });
-
-      streamRef.current = null;
-    }
-
-    if (videoRef.current) {
-      videoRef.current.srcObject = null;
-    }
-
-    setCameraEnabled(false);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => {
-          track.stop();
-        });
-      }
-    };
-  }, []);
-
   return (
     <main className="app">
 
@@ -141,87 +50,11 @@ function App() {
               GESTURE ENGINE
             </span>
 
-            <span
-              className={`waiting ${
-                cameraEnabled ? "camera-active" : ""
-              }`}
-            >
-              {cameraEnabled ? "ACTIVE" : "WAITING"}
-            </span>
+            <span className="waiting">WAITING</span>
           </div>
 
 
-          {/* CAMERA */}
-          <div
-            className={`camera-placeholder ${
-              cameraEnabled ? "camera-enabled" : ""
-            }`}
-          >
-
-            {!cameraEnabled ? (
-              <>
-                <div className="camera-icon">
-                  <Camera
-                    size={52}
-                    strokeWidth={1.4}
-                  />
-                </div>
-
-                <h2>Camera Ready</h2>
-
-                <p>
-                  Your camera will appear here once
-                  gesture recognition is enabled.
-                </p>
-
-                <button
-                  className="camera-button"
-                  onClick={enableCamera}
-                >
-                  <Camera size={18} />
-
-                  ENABLE CAMERA
-                </button>
-
-                {cameraError && (
-                  <div className="camera-error">
-                    <CameraOff size={17} />
-
-                    <span>{cameraError}</span>
-                  </div>
-                )}
-              </>
-            ) : (
-              <>
-                <video
-                  ref={videoRef}
-                  className="camera-video"
-                  autoPlay
-                  playsInline
-                  muted
-                />
-
-                <div className="camera-overlay">
-
-                  <div className="camera-live">
-                    <span className="live-dot"></span>
-                    CAMERA LIVE
-                  </div>
-
-                  <button
-                    className="disable-camera-button"
-                    onClick={disableCamera}
-                  >
-                    <CameraOff size={17} />
-
-                    TURN OFF
-                  </button>
-
-                </div>
-              </>
-            )}
-
-          </div>
+          <GestureCamera />
 
 
           {/* GESTURES */}

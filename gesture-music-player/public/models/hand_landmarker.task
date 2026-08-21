@@ -1,0 +1,4 @@
+baseOptions: {
+  modelAssetPath: "/models/hand_landmarker.task",
+  delegate: "GPU",
+},
