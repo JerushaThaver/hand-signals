@@ -1,29 +1,53 @@
 import {
   FilesetResolver,
   HandLandmarker,
+  type HandLandmarkerResult,
 } from "@mediapipe/tasks-vision";
 
 let handLandmarker: HandLandmarker | null = null;
 
-export async function loadHandLandmarker() {
-  if (handLandmarker) return handLandmarker;
+export async function createHandLandmarker() {
+  if (handLandmarker) {
+    return handLandmarker;
+  }
 
   const vision = await FilesetResolver.forVisionTasks(
-    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/wasm"
+    "/wasm"
   );
 
-  handLandmarker = await HandLandmarker.createFromOptions(vision, {
-    baseOptions: {
-      modelAssetPath: "/models/hand_landmarker.task",
-      delegate: "GPU",
-    },
+  handLandmarker = await HandLandmarker.createFromOptions(
+    vision,
+    {
+      baseOptions: {
+        modelAssetPath: "/models/hand_landmarker.task",
+        delegate: "GPU",
+      },
 
-    runningMode: "VIDEO",
-    numHands: 1,
-    minHandDetectionConfidence: 0.6,
-    minHandPresenceConfidence: 0.6,
-    minTrackingConfidence: 0.6,
-  });
+      runningMode: "VIDEO",
+
+      numHands: 1,
+
+      minHandDetectionConfidence: 0.5,
+
+      minHandPresenceConfidence: 0.5,
+
+      minTrackingConfidence: 0.5,
+    }
+  );
 
   return handLandmarker;
+}
+
+export function detectHands(
+  video: HTMLVideoElement,
+  timestamp: number
+): HandLandmarkerResult | null {
+  if (!handLandmarker) {
+    return null;
+  }
+
+  return handLandmarker.detectForVideo(
+    video,
+    timestamp
+  );
 }

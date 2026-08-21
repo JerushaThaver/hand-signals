@@ -35,12 +35,10 @@ function App() {
         </div>
       </header>
 
-
       {/* MAIN CONTENT */}
       <div className="player-layout">
 
         <MusicPlayer songs={songs} />
-
 
         {/* GESTURE PANEL */}
         <aside className="gesture-panel">
@@ -50,12 +48,12 @@ function App() {
               GESTURE ENGINE
             </span>
 
-            <span className="waiting">WAITING</span>
+            <span className="waiting">
+              WAITING
+            </span>
           </div>
 
-
           <GestureCamera />
-
 
           {/* GESTURES */}
           <div className="gesture-list">
@@ -74,7 +72,6 @@ function App() {
               </div>
             </div>
 
-
             <div className="gesture-item">
               <span className="gesture-icon">
                 <img
@@ -89,7 +86,6 @@ function App() {
               </div>
             </div>
 
-
             <div className="gesture-item">
               <span className="gesture-icon">
                 <img
@@ -103,7 +99,6 @@ function App() {
                 <small>Point left</small>
               </div>
             </div>
-
 
             <div className="gesture-item">
               <span className="gesture-icon">

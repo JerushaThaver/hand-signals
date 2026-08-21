@@ -11,7 +11,7 @@ export async function getHandLandmarker() {
   }
 
   const vision = await FilesetResolver.forVisionTasks(
-    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/wasm"
+    "/wasm"
   );
 
   handLandmarker = await HandLandmarker.createFromOptions(
@@ -19,7 +19,8 @@ export async function getHandLandmarker() {
     {
       baseOptions: {
         modelAssetPath: "/models/hand_landmarker.task",
-        delegate: "GPU",
+        //delegate: "GPU",
+        delegate: "CPU"
       },
 
       runningMode: "VIDEO",
